@@ -4,6 +4,7 @@ USE `ancor`;
 
 #Clean start
 DROP TABLE IF EXISTS `vessel_position`;
+DROP TABLE IF EXISTS `vessel_position_bad_rows`;
 DROP TABLE IF EXISTS `vessel`;
 DROP TABLE IF EXISTS `port`;
 
@@ -51,4 +52,14 @@ CREATE TABLE IF NOT EXISTS `vessel_position` (
   FOREIGN KEY (`port_id`)
   REFERENCES port(`id`)
     ON UPDATE CASCADE ON DELETE RESTRICT
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+#Structure for table ancor.vessel_position
+CREATE TABLE IF NOT EXISTS `vessel_position_bad_rows` (
+  `id` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
+  `course` INTEGER NULL,
+  `wind` INTEGER NULL,
+  `temperature` TIMESTAMP NULL,
+  `windDirection` DOUBLE NULL,
+  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
