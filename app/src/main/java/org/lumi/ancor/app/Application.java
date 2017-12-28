@@ -1,4 +1,4 @@
-package org.lumi.ancor;
+package org.lumi.ancor.app;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
