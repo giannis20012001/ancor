@@ -29,7 +29,7 @@ public class Vessel implements Serializable {
                 ", imo='" + imo + '\'' +
                 ", vesselName='" + vesselName + '\'' +
                 ", grossTonnage=" + grossTonnage +
-                ", vesselPositionsn=" + vesselPositionsn +
+                ", vesselPositions=" + vesselPositions +
                 '}';
 
     }
@@ -77,13 +77,13 @@ public class Vessel implements Serializable {
 
     }
 
-    public Set<VesselPosition> getVesselPositionsn() {
-        return vesselPositionsn;
+    public Set<VesselPosition> getVesselPositions() {
+        return vesselPositions;
 
     }
 
-    public void setVesselPositionsn(Set<VesselPosition> vesselPositionsn) {
-        this.vesselPositionsn = vesselPositionsn;
+    public void setVesselPositions(Set<VesselPosition> vesselPositions) {
+        this.vesselPositions = vesselPositions;
 
     }
 
@@ -101,11 +101,11 @@ public class Vessel implements Serializable {
     /**
      * Parameterized constructor
      */
-    public Vessel(String imo, String vesselName, int grossTonnage, Set<VesselPosition> vesselPositionsn) {
+    public Vessel(String imo, String vesselName, int grossTonnage, Set<VesselPosition> vesselPositions) {
         this.imo = imo;
         this.vesselName = vesselName;
         this.grossTonnage = grossTonnage;
-        this.vesselPositionsn = vesselPositionsn;
+        this.vesselPositions = vesselPositions;
 
     }
 
@@ -116,6 +116,7 @@ public class Vessel implements Serializable {
     @GeneratedValue(strategy= GenerationType.AUTO)
     @Column(name="id")
     private Long id;
+    //=================================
     @NotNull
     @Size(max = 200)
     @Column(name="imo", unique = true)
@@ -128,7 +129,8 @@ public class Vessel implements Serializable {
     @Column(name="gross_tonnage")
     private int grossTonnage;
     @OneToMany( mappedBy="vessel", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private Set<VesselPosition> vesselPositionsn;
+    private Set<VesselPosition> vesselPositions;
+    //=================================
     //serialization related var
     private static final long serialVersionUID = 1L;
 

@@ -28,7 +28,7 @@ public class Port implements Serializable {
                 "id=" + id +
                 ", fromPort='" + fromPort + '\'' +
                 ", fromCountry='" + fromCountry + '\'' +
-                ", vesselPositionsn=" + vesselPositionsn +
+                ", vesselPositions=" + vesselPositions +
                 '}';
 
     }
@@ -66,13 +66,13 @@ public class Port implements Serializable {
 
     }
 
-    public Set<VesselPosition> getVesselPositionsn() {
-        return vesselPositionsn;
+    public Set<VesselPosition> getVesselPositions() {
+        return vesselPositions;
 
     }
 
-    public void setVesselPositionsn(Set<VesselPosition> vesselPositionsn) {
-        this.vesselPositionsn = vesselPositionsn;
+    public void setVesselPositions(Set<VesselPosition> vesselPositions) {
+        this.vesselPositions = vesselPositions;
 
     }
 
@@ -90,10 +90,10 @@ public class Port implements Serializable {
     /**
      * Parameterized constructor
      */
-    public Port(String fromPort, String fromCountry, Set<VesselPosition> vesselPositionsn) {
+    public Port(String fromPort, String fromCountry, Set<VesselPosition> vesselPositions) {
         this.fromPort = fromPort;
         this.fromCountry = fromCountry;
-        this.vesselPositionsn = vesselPositionsn;
+        this.vesselPositions = vesselPositions;
 
     }
 
@@ -104,6 +104,7 @@ public class Port implements Serializable {
     @GeneratedValue(strategy= GenerationType.AUTO)
     @Column(name="id")
     private Long id;
+    //=================================
     @NotNull
     @Size(max = 200)
     @Column(name="from_port", unique = true)
@@ -113,7 +114,8 @@ public class Port implements Serializable {
     @Column(name="from_country", unique = true)
     private String fromCountry;
     @OneToMany(mappedBy="port", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private Set<VesselPosition> vesselPositionsn;
+    //=================================
+    private Set<VesselPosition> vesselPositions;
     //serialization related var
     private static final long serialVersionUID = 1L;
 

@@ -17,11 +17,11 @@
 
     <dependencies>
         <!-- internal dependencies -->
-        <dependency>
+        <!--<dependency>
             <groupId>org.lumi</groupId>
             <artifactId>filereceiver</artifactId>
             <version>${version}</version>
-        </dependency>
+        </dependency>-->
 
         <!-- Spring-boot dependencies -->
         <dependency>
