@@ -7,6 +7,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
 import java.util.List;
+import java.util.logging.Logger;
 
 /**
  * Created by John Tsantilis
@@ -61,11 +62,13 @@ public class VesselDAO implements IVesselDAO {
                 .setParameter(3, grossTonnage)
                 .getResultList().size();
 
-        return count > 0 ? true : false;
+        return count > 0;
 
     }
 
     @PersistenceContext
     private EntityManager entityManager;
 
+    //Logger
+    private static final Logger LOGGER = Logger.getLogger(VesselDAO.class.getName());
 }

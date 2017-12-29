@@ -14,6 +14,7 @@ CREATE TABLE IF NOT EXISTS `vessel` (
   `imo` VARCHAR(200) NOT NULL UNIQUE,
   `vessel_name` VARCHAR(200) NOT NULL UNIQUE,
   `gross_tonnage` INTEGER NOT NULL,
+
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -22,6 +23,7 @@ CREATE TABLE IF NOT EXISTS `port` (
   `id` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
   `from_port` VARCHAR(200) NOT NULL UNIQUE,
   `from_country` VARCHAR(200) NOT NULL UNIQUE,
+
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -59,7 +61,8 @@ CREATE TABLE IF NOT EXISTS `vessel_position_bad_rows` (
   `id` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
   `course` INTEGER NULL,
   `wind` INTEGER NULL,
-  `temperature` TIMESTAMP NULL,
-  `windDirection` DOUBLE NULL,
+  `temperature` INTEGER NULL,
+  `wind_direction` VARCHAR(200) NULL,
+
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;

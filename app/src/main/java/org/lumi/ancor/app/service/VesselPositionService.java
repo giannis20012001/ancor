@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.logging.Logger;
 
 /**
  * Created by John Tsantilis
@@ -59,5 +60,8 @@ public class VesselPositionService implements IVesselPositionService {
 
     @Autowired
     private IVesselPositionDAO vesselPositionDAO;
+
+    //Logger
+    private static final Logger LOGGER = Logger.getLogger(VesselPositionService.class.getName());
 
 }

@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.logging.Logger;
 
 /**
  * Created by John Tsantilis
@@ -56,5 +57,8 @@ public class PortService implements IPortService {
 
     @Autowired
     private IPortDAO portDAO;
+
+    //Logger
+    private static final Logger LOGGER = Logger.getLogger(PortService.class.getName());
 
 }

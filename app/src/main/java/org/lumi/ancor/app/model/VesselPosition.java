@@ -205,6 +205,7 @@ public class VesselPosition implements Serializable {
     @GeneratedValue(strategy= GenerationType.AUTO)
     @Column(name="id")
     private Long id;
+    //=================================
     @NotNull
     @Column(name="latitude")
     private double latitude;
@@ -235,12 +236,14 @@ public class VesselPosition implements Serializable {
     @Size(max = 200)
     @Column(name="destination_country")
     private String destinationCountry;
+    //=================================
     @ManyToOne(cascade= CascadeType.ALL)
     @JoinColumn(name = "vessel_id")
     private Vessel vessel;
     @ManyToOne(fetch = FetchType.LAZY, cascade= CascadeType.ALL)
     @JoinColumn(name = "port_id")
     private Port port;
+    //=================================
     //serialization related var
     private static final long serialVersionUID = 1L;
 

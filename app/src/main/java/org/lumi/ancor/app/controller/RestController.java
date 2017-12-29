@@ -3,7 +3,9 @@ package org.lumi.ancor.app.controller;
 import org.lumi.ancor.app.model.Port;
 import org.lumi.ancor.app.model.Vessel;
 import org.lumi.ancor.app.model.VesselPosition;
+import org.lumi.ancor.app.model.VesselPositionBadRows;
 import org.lumi.ancor.app.service.IPortService;
+import org.lumi.ancor.app.service.IVesselPositionBadRowsService;
 import org.lumi.ancor.app.service.IVesselPositionService;
 import org.lumi.ancor.app.service.IVesselService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +23,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.List;
+import java.util.logging.Logger;
 
 /**
  * Created by John Tsantilis
@@ -57,6 +60,14 @@ public class RestController {
 
     }
 
+    @GetMapping("/vessel_position_bad_rows")
+    public ResponseEntity<List<VesselPositionBadRows>> getAllVesselPositionBadRows() {
+        List<VesselPositionBadRows> list = vesselPositionBadRowsService.getAllVesselPositionBadRows();
+
+        return new ResponseEntity<>(list, HttpStatus.OK);
+
+    }
+
     //==================================================================================================================
     //READ by ID
     //==================================================================================================================
@@ -81,6 +92,14 @@ public class RestController {
         VesselPosition vesselPosition = vesselPositionService.getVesselPositionById(id);
 
         return new ResponseEntity<>(vesselPosition, HttpStatus.OK);
+
+    }
+
+    @GetMapping("/vessel_position_bad_rows/{id}")
+    public ResponseEntity<VesselPositionBadRows> getVesselPositionBadRowsById(@PathVariable("id") Long id) {
+        VesselPositionBadRows vesselPositionBadRows = vesselPositionBadRowsService.getVesselPositionBadRowsById(id);
+
+        return new ResponseEntity<>(vesselPositionBadRows, HttpStatus.OK);
 
     }
 
@@ -133,6 +152,23 @@ public class RestController {
 
     }
 
+    @PostMapping("/vessel_position_bad_rows")
+    public ResponseEntity<Void> addVesselPositionBadRows(@RequestBody VesselPositionBadRows vesselPositionBadRows,
+                                                  UriComponentsBuilder builder) {
+        boolean flag = vesselPositionBadRowsService.addVesselPositionBadRows(vesselPositionBadRows);
+        if (!flag) {
+            return new ResponseEntity<>(HttpStatus.CONFLICT);
+
+        }
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setLocation(builder.path("/vessel_position_bad_rows/{id}")
+                .buildAndExpand(vesselPositionBadRows.getId()).toUri());
+
+        return new ResponseEntity<>(headers, HttpStatus.CREATED);
+
+    }
+
     //==================================================================================================================
     //UPDATE
     //==================================================================================================================
@@ -172,6 +208,20 @@ public class RestController {
         vesselPositionService.updateVesselPosition(vesselPosition);
 
         return new ResponseEntity<>(vesselPosition, HttpStatus.OK);
+
+    }
+
+    @PutMapping("/vessel_position_bad_rows")
+    public ResponseEntity<VesselPositionBadRows> updateVesselPositionBadRows(
+            @RequestBody VesselPositionBadRows vesselPositionBadRows) {
+        if(vesselPositionBadRowsService.getVesselPositionBadRowsById(vesselPositionBadRows.getId()) == null) {
+            return ResponseEntity.notFound().build();
+
+        }
+
+        vesselPositionBadRowsService.updateVesselPositionBadRows(vesselPositionBadRows);
+
+        return new ResponseEntity<>(vesselPositionBadRows, HttpStatus.OK);
 
     }
 
@@ -217,6 +267,19 @@ public class RestController {
 
     }
 
+    @DeleteMapping("/vessel_position_bad_rows/{id}")
+    public ResponseEntity<Void> deleteVesselPositionBadRows(@PathVariable("id") Long id) {
+        if(vesselPositionBadRowsService.getVesselPositionBadRowsById(id) == null) {
+            return ResponseEntity.notFound().build();
+
+        }
+
+        vesselPositionBadRowsService.deleteVesselPositionBadRows(id);
+
+        return new ResponseEntity<>(HttpStatus.OK);
+
+    }
+
     //==================================================================================================================
     //Autowired Controller service interface variables
     //==================================================================================================================
@@ -228,5 +291,11 @@ public class RestController {
 
     @Autowired
     private IVesselPositionService vesselPositionService;
+
+    @Autowired
+    private IVesselPositionBadRowsService vesselPositionBadRowsService;
+
+    //Logger
+    private static final Logger LOGGER = Logger.getLogger(RestController.class.getName());
 
 }

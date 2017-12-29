@@ -7,6 +7,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
 import java.util.List;
+import java.util.logging.Logger;
 
 /**
  * Created by John Tsantilis
@@ -59,11 +60,14 @@ public class PortDAO implements IPortDAO {
                 .setParameter(2, fromCountry)
                 .getResultList().size();
 
-        return count > 0 ? true : false;
+        return count > 0;
 
     }
 
     @PersistenceContext
     private EntityManager entityManager;
+
+    //Logger
+    private static final Logger LOGGER = Logger.getLogger(PortDAO.class.getName());
 
 }

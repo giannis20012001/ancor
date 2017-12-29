@@ -4,7 +4,6 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <artifactId>app</artifactId>
-    <version>1.0.0-beta</version>
     <packaging>jar</packaging>
     <name>app</name>
     <url>http://maven.apache.org</url>
@@ -17,6 +16,14 @@
     </parent>
 
     <dependencies>
+        <!-- internal dependencies -->
+        <dependency>
+            <groupId>org.lumi</groupId>
+            <artifactId>filereceiver</artifactId>
+            <version>${version}</version>
+        </dependency>
+
+        <!-- Spring-boot dependencies -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
@@ -48,13 +55,18 @@
     </dependencies>
 
     <build>
+        <finalName>ancor-${name}-${version}</finalName>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <mainClass>org.lumi.ancor.app.Application</mainClass>
+                </configuration>
             </plugin>
 
             <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.7.0</version>
                 <configuration>

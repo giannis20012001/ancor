@@ -8,6 +8,7 @@ import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
 import java.util.Date;
 import java.util.List;
+import java.util.logging.Logger;
 
 /**
  * Created by John Tsantilis
@@ -79,11 +80,14 @@ public class VesselPositionDAO implements IVesselPositionDAO {
                 .setParameter(9, destinationCountry)
                 .getResultList().size();
 
-        return count > 0 ? true : false;
+        return count > 0;
 
     }
 
     @PersistenceContext
     private EntityManager entityManager;
+
+    //Logger
+    private static final Logger LOGGER = Logger.getLogger(VesselPositionDAO.class.getName());
 
 }
