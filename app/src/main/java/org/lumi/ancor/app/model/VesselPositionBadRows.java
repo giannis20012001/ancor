@@ -7,6 +7,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.validation.constraints.Size;
+import java.io.Serializable;
 
 /**
  * Created by John Tsantilis
@@ -15,7 +16,7 @@ import javax.validation.constraints.Size;
 
 @Entity
 @Table(name="vessel_position_bad_rows")
-public class VesselPositionBadRows {
+public class VesselPositionBadRows implements Serializable {
     @Override
     public String toString() {
         return "VesselPositionBadRows{" +
