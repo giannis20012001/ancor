@@ -114,7 +114,7 @@ public class Port implements Serializable {
     @Size(max = 200)
     @Column(name="from_country", unique = true)
     private String fromCountry;
-    @OneToMany(mappedBy="port", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy="port", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     //=================================
     private Set<VesselPosition> vesselPositions = new HashSet<>();
     //serialization related var

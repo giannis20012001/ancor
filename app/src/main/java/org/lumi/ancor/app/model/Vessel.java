@@ -129,7 +129,7 @@ public class Vessel implements Serializable {
     @NotNull
     @Column(name="gross_tonnage")
     private int grossTonnage;
-    @OneToMany( mappedBy="vessel", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany( mappedBy="vessel", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private Set<VesselPosition> vesselPositions = new HashSet<>();
     //=================================
     //serialization related var

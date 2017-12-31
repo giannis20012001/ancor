@@ -244,7 +244,7 @@ public class VesselPosition implements Serializable {
     @JoinColumn(name = "vessel_id")
     private Vessel vessel;
     @JsonIgnore
-    @ManyToOne(fetch = FetchType.LAZY, cascade= CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.EAGER, cascade= CascadeType.ALL)
     @JoinColumn(name = "port_id")
     private Port port;
     //=================================

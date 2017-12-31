@@ -21,8 +21,8 @@ CREATE TABLE IF NOT EXISTS `vessel` (
 #Structure for lookup-table ancor.port
 CREATE TABLE IF NOT EXISTS `port` (
   `id` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
-  `from_port` VARCHAR(200) NOT NULL UNIQUE,
-  `from_country` VARCHAR(200) NOT NULL UNIQUE,
+  `from_port` VARCHAR(200) NOT NULL,
+  `from_country` VARCHAR(200) NOT NULL,
 
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -39,8 +39,8 @@ CREATE TABLE IF NOT EXISTS `vessel_position` (
   `direction_degrees` INTEGER NOT NULL,
   `destination_port` VARCHAR(200) NOT NULL,
   `destination_country` VARCHAR(200) NOT NULL,
-  `vessel_id` INTEGER UNSIGNED NOT NULL,
-  `port_id` INTEGER UNSIGNED NOT NULL,
+  `vessel_id` INTEGER UNSIGNED NULL,
+  `port_id` INTEGER UNSIGNED NULL,
 
   INDEX (vessel_id),
   INDEX (port_id),

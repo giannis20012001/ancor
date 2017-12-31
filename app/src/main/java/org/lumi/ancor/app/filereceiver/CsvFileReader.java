@@ -1,6 +1,13 @@
 package org.lumi.ancor.app.filereceiver;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.mashape.unirest.http.HttpResponse;
+import com.mashape.unirest.http.JsonNode;
+import com.mashape.unirest.http.ObjectMapper;
+import com.mashape.unirest.http.Unirest;
+import com.mashape.unirest.http.exceptions.UnirestException;
 import com.opencsv.CSVReader;
+import org.json.JSONObject;
 import org.lumi.ancor.app.model.Port;
 import org.lumi.ancor.app.model.Vessel;
 import org.lumi.ancor.app.model.VesselPosition;
@@ -17,10 +24,11 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestTemplate;
 
-import javax.annotation.PostConstruct;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FilenameFilter;
+import java.io.IOException;
 import java.net.URI;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -35,13 +43,11 @@ import java.util.regex.Pattern;
  * (i [dot] tsantilis [at] yahoo [dot] com A.K.A lumi) on 29/12/2017.
  */
 
-//@Configuration
 @Component
 public class CsvFileReader {
     //@Scheduled(fixedRateString = "${fixedRate.in.milliseconds}")
     @Scheduled(fixedDelay = 500000000, initialDelay = 5000)
-    //@PostConstruct
-    public void init() { //OLD: parseCSVFiles
+    public void parseCSVFiles() {
         LOGGER.info("========================================================");
         LOGGER.info("System ENVs to be used: ");
         LOGGER.info("PATH_4_UNPROCESSED_FILES: " + PATH_4_UNPROCESSED_FILES);
@@ -63,6 +69,7 @@ public class CsvFileReader {
         }
 
         LOGGER.info("CSV parsing finished successfully!.....");
+        LOGGER.info("Records processed: " + recordNum);
         LOGGER.info("========================================================");
         LOGGER.info("");
 
@@ -72,32 +79,31 @@ public class CsvFileReader {
         //create CSVReader object
         CSVReader reader;
 
-        try {
-            for (String fileName : fileNames) {
-                LOGGER.info("parsing CSV: " + fileName);
+        for (String fileName : fileNames) {
+            LOGGER.info("parsing CSV: " + fileName);
+            try {
                 reader = new CSVReader(new FileReader(PATH_4_UNPROCESSED_FILES + File.separator + fileName),
                         CSV_FILE_DELIMITER);
-
                 //Read line by line
                 String[] record;
                 //Skip header row
                 reader.readNext();
 
                 while((record = reader.readNext()) != null){
-                    if ((record[0] != null || !record[0].isEmpty()) &&
-                            (record[1] != null || !record[1].isEmpty()) &&
-                            ((record[2] != null || !record[2].isEmpty()) && (stringToObject(record[2]) instanceof Double)) &&
-                            ((record[3] != null || !record[3].isEmpty()) && (stringToObject(record[3]) instanceof Double)) &&
-                            ((record[4] != null || !record[4].isEmpty()) && (stringToObject(record[4]) instanceof Date)) &&
-                            ((record[5] != null || !record[5].isEmpty()) && (stringToObject(record[5]) instanceof Integer)) &&
-                            ((record[6] != null || !record[6].isEmpty()) && (stringToObject(record[6]) instanceof Double)) &&
-                            ((record[8] != null || !record[8].isEmpty()) && (stringToObject(record[8]) instanceof Double)) &&
-                            ((record[9] != null || !record[9].isEmpty()) && (stringToObject(record[9]) instanceof Integer)) &&
-                            ((record[10] != null || !record[10].isEmpty()) && (stringToObject(record[10]) instanceof Integer)) &&
-                            (record[11] != null || !record[11].isEmpty()) &&
-                            (record[12] != null || !record[12].isEmpty()) &&
-                            (record[13] != null || !record[13].isEmpty()) &&
-                            (record[14] != null || !record[14].isEmpty())) {
+                    if ((record[0] != null && !record[0].isEmpty() && !record[0].contains(",")) &&
+                            (record[1] != null && !record[1].isEmpty() && !record[13].contains(",")) &&
+                            ((record[2] != null && !record[2].isEmpty()) && (stringToObject(record[2]) instanceof Double)) &&
+                            ((record[3] != null && !record[3].isEmpty()) && (stringToObject(record[3]) instanceof Double)) &&
+                            ((record[4] != null && !record[4].isEmpty()) && (stringToObject(record[4]) instanceof Date)) &&
+                            ((record[5] != null && !record[5].isEmpty()) && (stringToObject(record[5]) instanceof Integer)) &&
+                            ((record[6] != null && !record[6].isEmpty()) && (stringToObject(record[6]) instanceof Double)) &&
+                            ((record[8] != null && !record[8].isEmpty()) && (stringToObject(record[8]) instanceof Double)) &&
+                            ((record[9] != null && !record[9].isEmpty()) && (stringToObject(record[9]) instanceof Integer)) &&
+                            ((record[10] != null && !record[10].isEmpty()) && (stringToObject(record[10]) instanceof Integer)) &&
+                            (record[11] != null && !record[11].isEmpty() && !record[11].contains(",")) &&
+                            (record[12] != null && !record[12].isEmpty() && !record[12].contains(",")) &&
+                            (record[13] != null && !record[13].isEmpty() && !record[13].contains(",")) &&
+                            (record[14] != null && !record[14].isEmpty() && !record[14].contains(","))) {
                         strictlyValidatedColumns(record);
 
                     }else {
@@ -105,14 +111,16 @@ public class CsvFileReader {
 
                     }
 
+                    recordNum++;
+
                 }
 
                 reader.close();
 
-            }
+            } catch (IOException e) {
+                e.printStackTrace();
 
-        } catch (Exception e) {
-            LOGGER.severe(e.getMessage());
+            }
 
         }
 
@@ -151,7 +159,7 @@ public class CsvFileReader {
 
     private void nonStrictlyValidatedColumns(String[] record) {
         VesselPositionBadRows vesselPositionBadRows = new VesselPositionBadRows();
-        if ((record[7] != null || !record[7].isEmpty()) && (stringToObject(record[7]) instanceof Integer)) {
+        if ((record[7] != null && !record[7].isEmpty()) && (stringToObject(record[7]) instanceof Integer)) {
             vesselPositionBadRows.setCourse((Integer) stringToObject(record[7]));
 
         }else {
@@ -159,7 +167,7 @@ public class CsvFileReader {
 
         }
 
-        if ((record[15] != null || !record[15].isEmpty()) && (stringToObject(record[15]) instanceof Integer)) {
+        if ((record[15] != null && !record[15].isEmpty()) && (stringToObject(record[15]) instanceof Integer)) {
             vesselPositionBadRows.setWind((Integer) stringToObject(record[15]));
 
         }else{
@@ -167,7 +175,7 @@ public class CsvFileReader {
 
         }
 
-        if ((record[16] != null || !record[16].isEmpty()) && (stringToObject(record[16]) instanceof Integer)) {
+        if ((record[16] != null && !record[16].isEmpty()) && (stringToObject(record[16]) instanceof Integer)) {
             vesselPositionBadRows.setTemperature((Integer) stringToObject(record[16]));
 
         }else {
@@ -175,7 +183,7 @@ public class CsvFileReader {
 
         }
 
-        if ((record[17] != null || !record[17].isEmpty()) && (stringToObject(record[17]) instanceof Integer)) {
+        if ((record[17] != null && !record[17].isEmpty()) && (stringToObject(record[17]) instanceof Integer)) {
             vesselPositionBadRows.setWindDirection(record[17]);
 
         }else {
@@ -270,154 +278,133 @@ public class CsvFileReader {
     }
 
     private void postPort2RESTServer(Port port) {
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        RestTemplate restTemplate = new RestTemplate();
-        HttpEntity<Port> requestEntity = new HttpEntity<>(port, headers);
-        URI uri = restTemplate.postForLocation(REST_SERVER + "/port", requestEntity);
-        LOGGER.info(uri.getPath());
+        try {
+            HttpResponse<String> httpResponse = Unirest.post(REST_SERVER + "/port")
+                    .header("accept", "application/json")
+                    .header("Content-Type", "application/json")
+                    .body(port)
+                    .asString();
 
-        /*try {
-            HttpHeaders headers = new HttpHeaders();
-            headers.setContentType(MediaType.APPLICATION_JSON);
-            HttpEntity<Port> entity = new HttpEntity<>(port, headers);
-            ResponseEntity controllerResponse = new RestTemplate().exchange(
-                    REST_SERVER + "/port",
-                    HttpMethod.POST,
-                    entity,
-                    ResponseEntity.class
-            ).getBody();
-
-            if (controllerResponse.getStatusCode().is2xxSuccessful()) {
+            if (httpResponse.getStatus() == 201) {
                 LOGGER.info("REST operation to add Port succeeded!.....");
 
-            }else if (controllerResponse.getStatusCode().equals(HttpStatus.CONFLICT)) {
+            }else if (httpResponse.getStatus() == 409) {
                 LOGGER.info("Port already exists!.....");
-
-            }else if (controllerResponse.getStatusCode().is4xxClientError() &&
-                    !controllerResponse.getStatusCode().equals(HttpStatus.CONFLICT)) {
-                LOGGER.info("POST request failed!.....");
 
             }
 
-        } catch (HttpClientErrorException | ResourceAccessException ex) {
-            LOGGER.severe(ex.getMessage());
+        } catch (UnirestException e) {
+            LOGGER.severe(e.getMessage());
 
-        }*/
+        }
 
     }
 
     private void postVessel2RESTServer(Vessel vessel) {
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        RestTemplate restTemplate = new RestTemplate();
-        HttpEntity<Vessel> requestEntity = new HttpEntity<>(vessel, headers);
-        URI uri = restTemplate.postForLocation(REST_SERVER + "/vessel", requestEntity);
-        LOGGER.info(uri.getPath());
+        try {
+            HttpResponse<String> httpResponse = Unirest.post(REST_SERVER + "/vessel")
+                    .header("accept", "application/json")
+                    .header("Content-Type", "application/json")
+                    .body(vessel)
+                    .asString();
 
-        /*try {
-            HttpHeaders headers = new HttpHeaders();
-            headers.setContentType(MediaType.APPLICATION_JSON);
-            HttpEntity<Vessel> entity = new HttpEntity<>(vessel, headers);
-            ResponseEntity controllerResponse = new RestTemplate().exchange(
-                    REST_SERVER + "/vessel",
-                    HttpMethod.POST,
-                    entity,
-                    ResponseEntity.class
-            ).getBody();
-
-            if (controllerResponse.getStatusCode().is2xxSuccessful()) {
+            if (httpResponse.getStatus() == 201) {
                 LOGGER.info("REST operation to add Vessel succeeded!.....");
 
-            }else if (controllerResponse.getStatusCode().equals(HttpStatus.CONFLICT)) {
+            }else if (httpResponse.getStatus() == 409) {
                 LOGGER.info("Vessel already exists!.....");
-
-            }else if (controllerResponse.getStatusCode().is4xxClientError() &&
-                    !controllerResponse.getStatusCode().equals(HttpStatus.CONFLICT)) {
-                LOGGER.info("POST request failed!.....");
 
             }
 
-        } catch (HttpClientErrorException | ResourceAccessException ex) {
-            LOGGER.severe(ex.getMessage());
+        } catch (UnirestException e) {
+            LOGGER.severe(e.getMessage());
 
-        }*/
+        }
 
     }
 
     private void postVesselPosition2RESTServer(VesselPosition vesselPosition) {
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        RestTemplate restTemplate = new RestTemplate();
-        HttpEntity<VesselPosition> requestEntity = new HttpEntity<>(vesselPosition, headers);
-        URI uri = restTemplate.postForLocation(REST_SERVER + "/vessel_position", requestEntity);
-        LOGGER.info(uri.getPath());
+        try {
+            HttpResponse<String> httpResponse = Unirest.post(REST_SERVER + "/vessel_position")
+                    .header("accept", "application/json")
+                    .header("Content-Type", "application/json")
+                    .body(vesselPosition)
+                    .asString();
 
-        /*try {
-            HttpHeaders headers = new HttpHeaders();
-            headers.setContentType(MediaType.APPLICATION_JSON);
-            HttpEntity<VesselPosition> entity = new HttpEntity<>(vesselPosition, headers);
-            ResponseEntity controllerResponse = new RestTemplate().exchange(
-                    REST_SERVER + "/vessel_position",
-                    HttpMethod.POST,
-                    entity,
-                    ResponseEntity.class
-            ).getBody();
-
-            if (controllerResponse.getStatusCode().is2xxSuccessful()) {
+            if (httpResponse.getStatus() == 201) {
                 LOGGER.info("REST operation to add VesselPosition succeeded!.....");
 
-            }else if (controllerResponse.getStatusCode().equals(HttpStatus.CONFLICT)) {
+            }else if (httpResponse.getStatus() == 409) {
                 LOGGER.info("VesselPosition already exists!.....");
-
-            }else if (controllerResponse.getStatusCode().is4xxClientError() &&
-                    !controllerResponse.getStatusCode().equals(HttpStatus.CONFLICT)) {
-                LOGGER.info("POST request failed!.....");
 
             }
 
-        } catch (HttpClientErrorException | ResourceAccessException ex) {
-            LOGGER.severe(ex.getMessage());
+        } catch (UnirestException e) {
+            LOGGER.severe(e.getMessage());
 
-        }*/
+        }
 
     }
 
     private void postVesselPositionBadRows2RESTServer(VesselPositionBadRows vesselPositionBadRows) {
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        RestTemplate restTemplate = new RestTemplate();
-        HttpEntity<VesselPositionBadRows> requestEntity = new HttpEntity<>(vesselPositionBadRows, headers);
-        URI uri = restTemplate.postForLocation(REST_SERVER + "/vessel_position_bad_rows", requestEntity);
-        LOGGER.info(uri.getPath());
+        try {
+            HttpResponse<String> httpResponse = Unirest.post(REST_SERVER + "/vessel_position_bad_rows")
+                    .header("accept", "application/json")
+                    .header("Content-Type", "application/json")
+                    .body(vesselPositionBadRows)
+                    .asString();
 
-        /*try {
-            HttpHeaders headers = new HttpHeaders();
-            headers.setContentType(MediaType.APPLICATION_JSON);
-            HttpEntity<VesselPositionBadRows> entity = new HttpEntity<>(vesselPositionBadRows, headers);
-            ResponseEntity controllerResponse = new RestTemplate().exchange(
-                    REST_SERVER + "/vessel_position_bad_rows",
-                    HttpMethod.POST,
-                    entity,
-                    ResponseEntity.class
-            ).getBody();
-
-            if (controllerResponse.getStatusCode().is2xxSuccessful()) {
+            if (httpResponse.getStatus() == 201) {
                 LOGGER.info("REST operation to add VesselPositionBadRows succeeded!.....");
 
-            }else if (controllerResponse.getStatusCode().equals(HttpStatus.CONFLICT)) {
+            }else if (httpResponse.getStatus() == 409) {
                 LOGGER.info("VesselPositionBadRows already exists!.....");
-
-            }else if (controllerResponse.getStatusCode().is4xxClientError() &&
-                    !controllerResponse.getStatusCode().equals(HttpStatus.CONFLICT)) {
-                LOGGER.info("POST request failed!.....");
 
             }
 
-        } catch (HttpClientErrorException | ResourceAccessException ex) {
-            LOGGER.severe(ex.getMessage());
+        } catch (UnirestException e) {
+            LOGGER.severe(e.getMessage());
 
-        }*/
+        }
+
+    }
+
+    //=================================================================================================================
+    //Constructors
+    //=================================================================================================================
+    /**
+     * Constructor with serialization strategy of Java object into JSON
+     */
+    public CsvFileReader() {
+        Unirest.setObjectMapper(new ObjectMapper() {
+            private com.fasterxml.jackson.databind.ObjectMapper jacksonObjectMapper =
+                    new com.fasterxml.jackson.databind.ObjectMapper();
+
+            @Override
+            public <T> T readValue(String value, Class<T> valueType) {
+                try {
+                    return jacksonObjectMapper.readValue(value, valueType);
+
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+
+                }
+
+            }
+
+            @Override
+            public String writeValue(Object value) {
+                try {
+                    return jacksonObjectMapper.writeValueAsString(value);
+
+                } catch (JsonProcessingException e) {
+                    throw new RuntimeException(e);
+
+                }
+
+            }
+
+        });
 
     }
 
@@ -440,6 +427,7 @@ public class CsvFileReader {
     private List<Vessel> vessels = new ArrayList<>();
     private List<VesselPosition> vesselPositions = new ArrayList<>();
     private List<VesselPositionBadRows> vesselPositionsBadRows = new ArrayList<>();
+    private int recordNum = 1;
     //===============================================
     //Logger
     private static final Logger LOGGER = Logger.getLogger(CsvFileReader.class.getName());
