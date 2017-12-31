@@ -12,6 +12,7 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
+import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -115,7 +116,7 @@ public class Port implements Serializable {
     private String fromCountry;
     @OneToMany(mappedBy="port", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     //=================================
-    private Set<VesselPosition> vesselPositions;
+    private Set<VesselPosition> vesselPositions = new HashSet<>();
     //serialization related var
     private static final long serialVersionUID = 1L;
 

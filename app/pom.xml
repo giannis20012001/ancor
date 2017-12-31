@@ -16,13 +16,6 @@
     </parent>
 
     <dependencies>
-        <!-- internal dependencies -->
-        <!--<dependency>
-            <groupId>org.lumi</groupId>
-            <artifactId>filereceiver</artifactId>
-            <version>${version}</version>
-        </dependency>-->
-
         <!-- Spring-boot dependencies -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -51,6 +44,27 @@
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
             <version>6.0.6</version>
+        </dependency>
+
+        <!-- Rest -->
+        <dependency>
+            <groupId>com.mashape.unirest</groupId>
+            <artifactId>unirest-java</artifactId>
+            <version>1.4.9</version>
+        </dependency>
+
+        <!-- CSV processing framework -->
+        <dependency>
+            <groupId>com.opencsv</groupId>
+            <artifactId>opencsv</artifactId>
+            <version>4.1</version>
+        </dependency>
+
+        <!-- Json -->
+        <dependency>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
+            <version>2.8.2</version>
         </dependency>
     </dependencies>
 

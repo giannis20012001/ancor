@@ -16,8 +16,8 @@ public interface IVesselPositionDAO {
     void addVesselPosition(VesselPosition vesselPosition);
     void updateVesselPosition(VesselPosition vesselPosition);
     void deleteVesselPosition(Long id);
-    boolean vesselPositionExists(double latitude, double longitude, Date positionReceivedTimestamp, double speed,
-                                 double draught, int yearBuilt, int directionDegrees, String destinationPort,
+    boolean vesselPositionExists(Double latitude, Double longitude, Date positionReceivedTimestamp, Double speed,
+                                 Double draught, Integer yearBuilt, Integer directionDegrees, String destinationPort,
                                  String destinationCountry);
 
 }

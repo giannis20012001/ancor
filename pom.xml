@@ -26,7 +26,5 @@
     <modules>
         <!-- REST module for DB CRUD operations -->
         <module>app</module>
-        <!-- filereceiver module for CSV processing -->
-        <module>filereceiver</module>
     </modules>
 </project>

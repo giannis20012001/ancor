@@ -1,5 +1,7 @@
 package org.lumi.ancor.app.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -52,27 +54,27 @@ public class VesselPosition implements Serializable {
 
     }
 
-    public void setId(Long Long) {
+    public void setId(Long id) {
         this.id = id;
 
     }
 
-    public double getLatitude() {
+    public Double getLatitude() {
         return latitude;
 
     }
 
-    public void setLatitude(double latitude) {
+    public void setLatitude(Double latitude) {
         this.latitude = latitude;
 
     }
 
-    public double getLongitude() {
+    public Double getLongitude() {
         return longitude;
 
     }
 
-    public void setLongitude(double longitude) {
+    public void setLongitude(Double longitude) {
         this.longitude = longitude;
 
     }
@@ -87,42 +89,42 @@ public class VesselPosition implements Serializable {
 
     }
 
-    public double getSpeed() {
+    public Double getSpeed() {
         return speed;
 
     }
 
-    public void setSpeed(double speed) {
+    public void setSpeed(Double speed) {
         this.speed = speed;
 
     }
 
-    public double getDraught() {
+    public Double getDraught() {
         return draught;
 
     }
 
-    public void setDraught(double draught) {
+    public void setDraught(Double draught) {
         this.draught = draught;
 
     }
 
-    public int getYearBuilt() {
+    public Integer getYearBuilt() {
         return yearBuilt;
 
     }
 
-    public void setYearBuilt(int yearBuilt) {
+    public void setYearBuilt(Integer yearBuilt) {
         this.yearBuilt = yearBuilt;
 
     }
 
-    public int getDirectionDegrees() {
+    public Integer getDirectionDegrees() {
         return directionDegrees;
 
     }
 
-    public void setDirectionDegrees(int directionDegrees) {
+    public void setDirectionDegrees(Integer directionDegrees) {
         this.directionDegrees = directionDegrees;
 
     }
@@ -181,8 +183,8 @@ public class VesselPosition implements Serializable {
     /**
      * Parameterized constructor
      */
-    public VesselPosition(double latitude, double longitude, Date positionReceivedTimestamp, double speed,
-                          double draught, int yearBuilt, int directionDegrees, String destinationPort,
+    public VesselPosition(Double latitude, Double longitude, Date positionReceivedTimestamp, Double speed,
+                          Double draught, Integer yearBuilt, Integer directionDegrees, String destinationPort,
                           String destinationCountry, Vessel vessel, Port port) {
         this.latitude = latitude;
         this.longitude = longitude;
@@ -208,26 +210,26 @@ public class VesselPosition implements Serializable {
     //=================================
     @NotNull
     @Column(name="latitude")
-    private double latitude;
+    private Double latitude;
     @NotNull
     @Column(name="longitude")
-    private double longitude;
+    private Double longitude;
     @NotNull
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name="position_received_timestamp")
     private Date positionReceivedTimestamp = new Date();
     @NotNull
     @Column(name="speed")
-    private double speed;
+    private Double speed;
     @NotNull
     @Column(name="draught")
-    private double draught;
+    private Double draught;
     @NotNull
     @Column(name="year_built")
-    private int yearBuilt;
+    private Integer yearBuilt;
     @NotNull
     @Column(name="direction_degrees")
-    private int directionDegrees;
+    private Integer directionDegrees;
     @NotNull
     @Size(max = 200)
     @Column(name="destination_port")
@@ -237,9 +239,11 @@ public class VesselPosition implements Serializable {
     @Column(name="destination_country")
     private String destinationCountry;
     //=================================
+    @JsonIgnore
     @ManyToOne(cascade= CascadeType.ALL)
     @JoinColumn(name = "vessel_id")
     private Vessel vessel;
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY, cascade= CascadeType.ALL)
     @JoinColumn(name = "port_id")
     private Port port;

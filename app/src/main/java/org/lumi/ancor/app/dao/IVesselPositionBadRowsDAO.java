@@ -16,6 +16,6 @@ public interface IVesselPositionBadRowsDAO {
     void addVesselPositionBadRows(VesselPositionBadRows vesselPositionBadRows);
     void updateVesselPositionBadRows(VesselPositionBadRows vesselPositionBadRows);
     void deleteVesselPositionBadRows(Long id);
-    boolean vesselPositionBadRowsExists(int course, int wind, int temperature, String windDirection);
+    boolean vesselPositionBadRowsExists(Integer course, Integer wind, Integer temperature, String windDirection);
 
 }

@@ -54,7 +54,7 @@ public class VesselDAO implements IVesselDAO {
     }
 
     @Override
-    public boolean vesselExists(String imo, String vesselName, int grossTonnage) {
+    public boolean vesselExists(String imo, String vesselName, Integer grossTonnage) {
         String query = "FROM Vessel as vssl WHERE vssl.imo = ? and vssl.vesselName = ? and vssl.grossTonnage = ?";
         int count = entityManager.createQuery(query)
                 .setParameter(1, imo)

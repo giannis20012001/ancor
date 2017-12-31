@@ -61,8 +61,8 @@ public class VesselPositionDAO implements IVesselPositionDAO {
     }
 
     @Override
-    public boolean vesselPositionExists(double latitude, double longitude, Date positionReceivedTimestamp, double speed,
-                                        double draught, int yearBuilt, int directionDegrees, String destinationPort,
+    public boolean vesselPositionExists(Double latitude, Double longitude, Date positionReceivedTimestamp, Double speed,
+                                        Double draught, Integer yearBuilt, Integer directionDegrees, String destinationPort,
                                         String destinationCountry) {
         String query = "FROM VesselPosition as vsslpstn WHERE vsslpstn.latitude = ? and vsslpstn.longitude = ? " +
                 "and vsslpstn.positionReceivedTimestamp = ? and vsslpstn.speed = ? and vsslpstn.draught = ? " +

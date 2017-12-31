@@ -15,6 +15,6 @@ public interface IVesselDAO {
     void addVessel(Vessel vessel);
     void updateVessel(Vessel vessel);
     void deleteVessel(Long id);
-    boolean vesselExists(String imo, String vesselName, int grossTonnage);
+    boolean vesselExists(String imo, String vesselName, Integer grossTonnage);
 
 }

@@ -55,7 +55,7 @@ public class VesselPositionBadRowsDAO implements IVesselPositionBadRowsDAO {
     }
 
     @Override
-    public boolean vesselPositionBadRowsExists(int course, int wind, int temperature, String windDirection) {
+    public boolean vesselPositionBadRowsExists(Integer course, Integer wind, Integer temperature, String windDirection) {
         String query = "FROM VesselPositionBadRows as vsslpstnbdrws WHERE vsslpstnbdrws.course = ? " +
                 "and vsslpstnbdrws.wind = ? and vsslpstnbdrws.temperature = ? and vsslpstnbdrws.windDirection = ?";
         int count = entityManager.createQuery(query)

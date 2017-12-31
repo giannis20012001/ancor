@@ -42,32 +42,32 @@ public class VesselPositionBadRows implements Serializable {
 
     }
 
-    public int getCourse() {
+    public Integer getCourse() {
         return course;
 
     }
 
-    public void setCourse(int course) {
+    public void setCourse(Integer course) {
         this.course = course;
 
     }
 
-    public int getWind() {
+    public Integer getWind() {
         return wind;
 
     }
 
-    public void setWind(int wind) {
+    public void setWind(Integer wind) {
         this.wind = wind;
 
     }
 
-    public int getTemperature() {
+    public Integer getTemperature() {
         return temperature;
 
     }
 
-    public void setTemperature(int temperature) {
+    public void setTemperature(Integer temperature) {
         this.temperature = temperature;
 
     }
@@ -96,7 +96,7 @@ public class VesselPositionBadRows implements Serializable {
     /**
      * Parameterized constructor
      */
-    public VesselPositionBadRows(int course, int wind, int temperature, String windDirection) {
+    public VesselPositionBadRows(Integer course, Integer wind, Integer temperature, String windDirection) {
         this.course = course;
         this.wind = wind;
         this.temperature = temperature;
@@ -113,11 +113,11 @@ public class VesselPositionBadRows implements Serializable {
     private Long id;
     //=================================
     @Column(name="course")
-    private int course;
+    private Integer course;
     @Column(name="wind")
-    private int wind;
+    private Integer wind;
     @Column(name="temperature")
-    private int temperature;
+    private Integer temperature;
     @Size(max = 200)
     @Column(name="wind_direction")
     private String windDirection;
