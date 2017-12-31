@@ -239,11 +239,9 @@ public class VesselPosition implements Serializable {
     @Column(name="destination_country")
     private String destinationCountry;
     //=================================
-    @JsonIgnore
     @ManyToOne(cascade= CascadeType.ALL)
     @JoinColumn(name = "vessel_id")
     private Vessel vessel;
-    @JsonIgnore
     @ManyToOne(fetch = FetchType.EAGER, cascade= CascadeType.ALL)
     @JoinColumn(name = "port_id")
     private Port port;

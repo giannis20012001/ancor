@@ -1,6 +1,7 @@
 package org.lumi.ancor.app.controller;
 
 import org.lumi.ancor.app.model.Port;
+import org.lumi.ancor.app.model.ProcessedFiles;
 import org.lumi.ancor.app.model.Vessel;
 import org.lumi.ancor.app.model.VesselPosition;
 import org.lumi.ancor.app.model.VesselPositionBadRows;
@@ -65,6 +66,17 @@ public class HttpRestController {
         List<VesselPositionBadRows> list = vesselPositionBadRowsService.getAllVesselPositionBadRows();
 
         return new ResponseEntity<>(list, HttpStatus.OK);
+
+    }
+
+    //==================================================================================================================
+    //EXTRA GET operations
+    //==================================================================================================================
+    @GetMapping("/processed_files")
+    public ResponseEntity<ProcessedFiles> getProcessedFiles() {
+        ProcessedFiles processedFiles = this.processedFiles;
+
+        return new ResponseEntity<>(processedFiles, HttpStatus.OK);
 
     }
 
@@ -294,6 +306,9 @@ public class HttpRestController {
 
     @Autowired
     private IVesselPositionBadRowsService vesselPositionBadRowsService;
+
+    @Autowired
+    private ProcessedFiles processedFiles;
 
     //Logger
     private static final Logger LOGGER = Logger.getLogger(HttpRestController.class.getName());

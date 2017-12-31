@@ -1,42 +1,32 @@
 package org.lumi.ancor.app.filereceiver;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.google.common.base.Stopwatch;
 import com.mashape.unirest.http.HttpResponse;
-import com.mashape.unirest.http.JsonNode;
 import com.mashape.unirest.http.ObjectMapper;
 import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import com.opencsv.CSVReader;
-import org.json.JSONObject;
 import org.lumi.ancor.app.model.Port;
+import org.lumi.ancor.app.model.ProcessedFiles;
 import org.lumi.ancor.app.model.Vessel;
 import org.lumi.ancor.app.model.VesselPosition;
 import org.lumi.ancor.app.model.VesselPositionBadRows;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
-import org.springframework.web.client.HttpClientErrorException;
-import org.springframework.web.client.ResourceAccessException;
-import org.springframework.web.client.RestTemplate;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FilenameFilter;
 import java.io.IOException;
-import java.net.URI;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 import java.util.TimeZone;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
+
+import static java.util.concurrent.TimeUnit.MILLISECONDS;
 
 /**
  * Created by John Tsantilis
@@ -46,7 +36,7 @@ import java.util.regex.Pattern;
 @Component
 public class CsvFileReader {
     //@Scheduled(fixedRateString = "${fixedRate.in.milliseconds}")
-    @Scheduled(fixedDelay = 500000000, initialDelay = 5000)
+    //@Scheduled(fixedDelay = 500000000, initialDelay = 5000)
     public void parseCSVFiles() {
         LOGGER.info("========================================================");
         LOGGER.info("System ENVs to be used: ");
@@ -57,6 +47,8 @@ public class CsvFileReader {
         LOGGER.info("FIXEDRATE_IN_MILLISECONDS: " + FIXEDRATE_IN_MILLISECONDS);
         LOGGER.info("Getting file name list.....");
         String[] fileNames = getListOfFileNames(PATH_4_UNPROCESSED_FILES);
+
+        processedFiles.setStopwatch(Stopwatch.createStarted());//Set start time
         if (fileNames.length > 0) {
             LOGGER.info("File names to be loaded: " + fileNames.toString());
             LOGGER.info("Executing CSV parsing.....");
@@ -68,8 +60,10 @@ public class CsvFileReader {
 
         }
 
+        processedFiles.getStopwatch().stop();//Set stop time
+        processedFiles.setElapsedTimeInMilliSeconds(processedFiles.getStopwatch().elapsed(MILLISECONDS));//Set final elapsed time
         LOGGER.info("CSV parsing finished successfully!.....");
-        LOGGER.info("Records processed: " + recordNum);
+        LOGGER.info("Records processed: " + processedFiles.getRecordNumProcessed());
         LOGGER.info("========================================================");
         LOGGER.info("");
 
@@ -81,6 +75,8 @@ public class CsvFileReader {
 
         for (String fileName : fileNames) {
             LOGGER.info("parsing CSV: " + fileName);
+            processedFiles.addProcessedFiles(fileName);//Add fileName to processed list
+
             try {
                 reader = new CSVReader(new FileReader(PATH_4_UNPROCESSED_FILES + File.separator + fileName),
                         CSV_FILE_DELIMITER);
@@ -111,7 +107,10 @@ public class CsvFileReader {
 
                     }
 
-                    recordNum++;
+                    LOGGER.info("Finished record num: " + processedFiles.getRecordNumProcessed());
+                    LOGGER.info("========================================================");
+                    LOGGER.info("");
+                    processedFiles.setRecordNumProcessed(processedFiles.getRecordNumProcessed() + 1); //Add record num
 
                 }
 
@@ -151,8 +150,8 @@ public class CsvFileReader {
         vesselPosition.setVessel(vessel);
         vesselPosition.setPort(port);
         //POSTing of objects to REST server
-        postPort2RESTServer(port);
-        postVessel2RESTServer(vessel);
+        //postPort2RESTServer(port);
+        //postVessel2RESTServer(vessel);
         postVesselPosition2RESTServer(vesselPosition);
 
     }
@@ -183,7 +182,7 @@ public class CsvFileReader {
 
         }
 
-        if ((record[17] != null && !record[17].isEmpty()) && (stringToObject(record[17]) instanceof Integer)) {
+        if (record[17] != null && !record[17].isEmpty()) {
             vesselPositionBadRows.setWindDirection(record[17]);
 
         }else {
@@ -422,13 +421,8 @@ public class CsvFileReader {
     //=================================================================================================================
     //Class variables
     //=================================================================================================================
-    //Test purposes
-    private List<Port> ports = new ArrayList<>();
-    private List<Vessel> vessels = new ArrayList<>();
-    private List<VesselPosition> vesselPositions = new ArrayList<>();
-    private List<VesselPositionBadRows> vesselPositionsBadRows = new ArrayList<>();
-    private int recordNum = 1;
-    //===============================================
+    @Autowired
+    private ProcessedFiles processedFiles;
     //Logger
     private static final Logger LOGGER = Logger.getLogger(CsvFileReader.class.getName());
 
