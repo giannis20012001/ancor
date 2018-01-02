@@ -455,7 +455,7 @@ public class CsvFileReader {
     private static final char CSV_FILE_DELIMITER = System.getenv("CSV_FILE_DELIMITER").charAt(0);
     private static final String FILE_PATTERN = System.getenv("FILE_PATTERN");
     private static final String REST_SERVER = "http://localhost:8080/api/v1";
-    //Pooling variable in milliseconds
+    //Pooling variables in milliseconds
     public static final String FIXEDELAY_IN_MILLISECONDS = System.getenv("FIXEDELAY_IN_MILLISECONDS");
     public static final String INITIALDELAY_IN_MILLISECONDS = System.getenv("INITIALDELAY_IN_MILLISECONDS");
 
