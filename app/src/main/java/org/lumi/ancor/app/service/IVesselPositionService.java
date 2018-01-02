@@ -2,6 +2,7 @@ package org.lumi.ancor.app.service;
 
 import org.lumi.ancor.app.model.VesselPosition;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -12,6 +13,8 @@ import java.util.List;
 public interface IVesselPositionService {
     List<VesselPosition> getAllVesselPositions();
     VesselPosition getVesselPositionById(Long id);
+    List<VesselPosition> getVesselPositionByDate(Date fromDate, Date toDate);
+    List<VesselPosition> getVesselPositionByDate(Date fromDate);
     boolean addVesselPosition(VesselPosition vesselPosition);
     void updateVesselPosition(VesselPosition vesselPosition);
     void deleteVesselPosition(Long id);

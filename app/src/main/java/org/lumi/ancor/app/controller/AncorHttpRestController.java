@@ -10,6 +10,7 @@ import org.lumi.ancor.app.service.IVesselPositionBadRowsService;
 import org.lumi.ancor.app.service.IVesselPositionService;
 import org.lumi.ancor.app.service.IVesselService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,9 +21,14 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import java.sql.Timestamp;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -33,7 +39,7 @@ import java.util.logging.Logger;
 
 @RestController
 @RequestMapping("/api/v1")
-public class HttpRestController {
+public class AncorHttpRestController {
     //==================================================================================================================
     //READ All
     //==================================================================================================================
@@ -70,17 +76,6 @@ public class HttpRestController {
     }
 
     //==================================================================================================================
-    //EXTRA GET operations
-    //==================================================================================================================
-    @GetMapping("/processed_files")
-    public ResponseEntity<ProcessedFiles> getProcessedFiles() {
-        ProcessedFiles processedFiles = this.processedFiles;
-
-        return new ResponseEntity<>(processedFiles, HttpStatus.OK);
-
-    }
-
-    //==================================================================================================================
     //READ by ID
     //==================================================================================================================
     @GetMapping("/port/{id}")
@@ -112,6 +107,35 @@ public class HttpRestController {
         VesselPositionBadRows vesselPositionBadRows = vesselPositionBadRowsService.getVesselPositionBadRowsById(id);
 
         return new ResponseEntity<>(vesselPositionBadRows, HttpStatus.OK);
+
+    }
+
+    //==================================================================================================================
+    //EXTRA GET operations
+    //==================================================================================================================
+    @GetMapping("/processed_files")
+    public ResponseEntity<ProcessedFiles> getProcessedFiles() {
+        ProcessedFiles processedFiles = this.processedFiles;
+
+        return new ResponseEntity<>(processedFiles, HttpStatus.OK);
+
+    }
+
+    @GetMapping("/specific_vessel_positions")
+    public ResponseEntity<List<VesselPosition>> getSpecificVesselPositions(
+            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) @RequestParam(name = "fromDate") Date fromDate,
+            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) @RequestParam(name = "toDate", required = false) Date toDate) {
+        List<VesselPosition> list;
+        if (toDate != null) {
+            list = vesselPositionService.getVesselPositionByDate(fromDate, toDate);
+            return new ResponseEntity<>(list, HttpStatus.OK);
+
+        }
+
+        list = vesselPositionService.getVesselPositionByDate(fromDate);
+
+        return new ResponseEntity<>(list, HttpStatus.OK);
+
 
     }
 
@@ -311,6 +335,6 @@ public class HttpRestController {
     private ProcessedFiles processedFiles;
 
     //Logger
-    private static final Logger LOGGER = Logger.getLogger(HttpRestController.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(AncorHttpRestController.class.getName());
 
 }

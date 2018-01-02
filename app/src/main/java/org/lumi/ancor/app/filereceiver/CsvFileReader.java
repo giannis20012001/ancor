@@ -2,6 +2,7 @@ package org.lumi.ancor.app.filereceiver;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.google.common.base.Stopwatch;
+import com.google.common.io.Files;
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.ObjectMapper;
 import com.mashape.unirest.http.Unirest;
@@ -36,7 +37,7 @@ import static java.util.concurrent.TimeUnit.MILLISECONDS;
 @Component
 public class CsvFileReader {
     //@Scheduled(fixedRateString = "${fixedRate.in.milliseconds}")
-    //@Scheduled(fixedDelay = 500000000, initialDelay = 5000)
+    @Scheduled(fixedDelayString = "${fixedDelay.in.milliseconds}", initialDelayString = "${initialDelay.in.milliseconds}")
     public void parseCSVFiles() {
         LOGGER.info("========================================================");
         LOGGER.info("System ENVs to be used: ");
@@ -44,7 +45,8 @@ public class CsvFileReader {
         LOGGER.info("PATH_4_PROCESSED_FILES: " + PATH_4_PROCESSED_FILES);
         LOGGER.info("CSV_FILE_DELIMITER: " + CSV_FILE_DELIMITER);
         LOGGER.info("FILE_PATTERN: " + FILE_PATTERN);
-        LOGGER.info("FIXEDRATE_IN_MILLISECONDS: " + FIXEDRATE_IN_MILLISECONDS);
+        LOGGER.info("FIXEDELAY_IN_MILLISECONDS: " + FIXEDELAY_IN_MILLISECONDS);
+        LOGGER.info("INITIALDELAY_IN_MILLISECONDS: " + INITIALDELAY_IN_MILLISECONDS);
         LOGGER.info("Getting file name list.....");
         String[] fileNames = getListOfFileNames(PATH_4_UNPROCESSED_FILES);
 
@@ -53,7 +55,6 @@ public class CsvFileReader {
             LOGGER.info("File names to be loaded: " + fileNames.toString());
             LOGGER.info("Executing CSV parsing.....");
             parseCSVFileLineByLine(fileNames);
-            //TODO: After successful processing move finished files to  PATH_4_PROCESSED_FILES directory
 
         }else {
             LOGGER.info("No CSV files where found during this pooling round!.....");
@@ -63,7 +64,7 @@ public class CsvFileReader {
         processedFiles.getStopwatch().stop();//Set stop time
         processedFiles.setElapsedTimeInMilliSeconds(processedFiles.getStopwatch().elapsed(MILLISECONDS));//Set final elapsed time
         LOGGER.info("CSV parsing finished successfully!.....");
-        LOGGER.info("Records processed: " + processedFiles.getRecordNumProcessed());
+        LOGGER.info("Total records processed: " + processedFiles.getRecordNumProcessed());
         LOGGER.info("========================================================");
         LOGGER.info("");
 
@@ -74,6 +75,7 @@ public class CsvFileReader {
         CSVReader reader;
 
         for (String fileName : fileNames) {
+            int localRecordsProcessedPosition = 1;
             LOGGER.info("parsing CSV: " + fileName);
             processedFiles.addProcessedFiles(fileName);//Add fileName to processed list
 
@@ -86,6 +88,7 @@ public class CsvFileReader {
                 reader.readNext();
 
                 while((record = reader.readNext()) != null){
+                    localRecordsProcessedPosition++; //Add local record num
                     if ((record[0] != null && !record[0].isEmpty() && !record[0].contains(",")) &&
                             (record[1] != null && !record[1].isEmpty() && !record[13].contains(",")) &&
                             ((record[2] != null && !record[2].isEmpty()) && (stringToObject(record[2]) instanceof Double)) &&
@@ -103,18 +106,34 @@ public class CsvFileReader {
                         strictlyValidatedColumns(record);
 
                     }else {
-                        nonStrictlyValidatedColumns(record);
+                        nonStrictlyValidatedColumns(record, fileName, localRecordsProcessedPosition);
 
                     }
 
-                    LOGGER.info("Finished record num: " + processedFiles.getRecordNumProcessed());
+                    LOGGER.info("Finished local record in position: " + localRecordsProcessedPosition);
                     LOGGER.info("========================================================");
                     LOGGER.info("");
-                    processedFiles.setRecordNumProcessed(processedFiles.getRecordNumProcessed() + 1); //Add record num
 
                 }
 
                 reader.close();
+
+            } catch (IOException e) {
+                e.printStackTrace();
+
+            }
+
+            //Add to total records processed
+            processedFiles.setRecordNumProcessed(processedFiles.getRecordNumProcessed()
+                    + (localRecordsProcessedPosition - 1));
+
+            //After successful processing move finished file to  PATH_4_PROCESSED_FILES directory
+            File fileToMove = new File(PATH_4_UNPROCESSED_FILES + File.separator + fileName);
+            File destDir = new File(PATH_4_PROCESSED_FILES + File.separator);
+            File targetFile = new File(destDir, "PROCESSED_" + fileToMove.getName());
+
+            try {
+                Files.move(fileToMove, targetFile);
 
             } catch (IOException e) {
                 e.printStackTrace();
@@ -156,7 +175,7 @@ public class CsvFileReader {
 
     }
 
-    private void nonStrictlyValidatedColumns(String[] record) {
+    private void nonStrictlyValidatedColumns(String[] record, String fileName, int localRecordsProcessedPosition) {
         VesselPositionBadRows vesselPositionBadRows = new VesselPositionBadRows();
         if ((record[7] != null && !record[7].isEmpty()) && (stringToObject(record[7]) instanceof Integer)) {
             vesselPositionBadRows.setCourse((Integer) stringToObject(record[7]));
@@ -190,6 +209,10 @@ public class CsvFileReader {
 
         }
 
+        //Set local record number for reference
+        vesselPositionBadRows.setRecordNumInFile(localRecordsProcessedPosition);
+        //Set file name that bad row originated
+        vesselPositionBadRows.setFileNameOrigination(fileName);
         //POSTing of objects to REST server
         postVesselPositionBadRows2RESTServer(vesselPositionBadRows);
 
@@ -433,6 +456,7 @@ public class CsvFileReader {
     private static final String FILE_PATTERN = System.getenv("FILE_PATTERN");
     private static final String REST_SERVER = "http://localhost:8080/api/v1";
     //Pooling variable in milliseconds
-    public static final String FIXEDRATE_IN_MILLISECONDS = System.getenv("POLLIN_INTERVAL");
+    public static final String FIXEDELAY_IN_MILLISECONDS = System.getenv("FIXEDELAY_IN_MILLISECONDS");
+    public static final String INITIALDELAY_IN_MILLISECONDS = System.getenv("INITIALDELAY_IN_MILLISECONDS");
 
 }

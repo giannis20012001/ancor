@@ -63,6 +63,8 @@ CREATE TABLE IF NOT EXISTS `vessel_position_bad_rows` (
   `wind` INTEGER NULL,
   `temperature` INTEGER NULL,
   `wind_direction` VARCHAR(200) NULL,
+  `file_mame_origination` VARCHAR(200) NOT NULL,
+  `record_num_in_file` INTEGER NOT NULL,
 
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;

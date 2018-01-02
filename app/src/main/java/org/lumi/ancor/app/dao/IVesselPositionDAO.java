@@ -13,6 +13,8 @@ import java.util.List;
 public interface IVesselPositionDAO {
     List<VesselPosition> getAllVesselPositions();
     VesselPosition getVesselPositionById(Long id);
+    List<VesselPosition> getVesselPositionByDate(Date fromDate, Date toDate);
+    List<VesselPosition> getVesselPositionByDate(Date fromDate);
     void addVesselPosition(VesselPosition vesselPosition);
     void updateVesselPosition(VesselPosition vesselPosition);
     void deleteVesselPosition(Long id);

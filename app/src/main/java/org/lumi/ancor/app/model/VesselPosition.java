@@ -1,6 +1,8 @@
 package org.lumi.ancor.app.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -26,6 +28,7 @@ import java.util.Date;
 
 @Entity
 @Table(name="vessel_position")
+@JsonIdentityInfo(generator=ObjectIdGenerators.PropertyGenerator.class, property="id")
 public class VesselPosition implements Serializable {
     @Override
     public String toString() {
@@ -217,6 +220,7 @@ public class VesselPosition implements Serializable {
     @NotNull
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name="position_received_timestamp")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd hh:mm")
     private Date positionReceivedTimestamp = new Date();
     @NotNull
     @Column(name="speed")

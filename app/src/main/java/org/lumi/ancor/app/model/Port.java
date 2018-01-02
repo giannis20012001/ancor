@@ -1,5 +1,8 @@
 package org.lumi.ancor.app.model;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -22,6 +25,7 @@ import java.util.Set;
 
 @Entity
 @Table(name="port")
+@JsonIdentityInfo(generator=ObjectIdGenerators.PropertyGenerator.class, property="id")
 public class Port implements Serializable {
     @Override
     public String toString() {
@@ -114,8 +118,8 @@ public class Port implements Serializable {
     @Size(max = 200)
     @Column(name="from_country", unique = true)
     private String fromCountry;
+    //@JsonBackReference
     @OneToMany(mappedBy="port", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    //=================================
     private Set<VesselPosition> vesselPositions = new HashSet<>();
     //serialization related var
     private static final long serialVersionUID = 1L;

@@ -5,7 +5,9 @@ import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.TemporalType;
 import javax.transaction.Transactional;
+import java.sql.Timestamp;
 import java.util.Date;
 import java.util.List;
 import java.util.logging.Logger;
@@ -22,6 +24,7 @@ public class VesselPositionDAO implements IVesselPositionDAO {
     @SuppressWarnings("unchecked")
     public List<VesselPosition> getAllVesselPositions() {
         String query = "FROM VesselPosition as vsslpstn ORDER BY vsslpstn.id";
+
         return (List<VesselPosition>) entityManager.createQuery(query).getResultList();
 
     }
@@ -29,6 +32,34 @@ public class VesselPositionDAO implements IVesselPositionDAO {
     @Override
     public VesselPosition getVesselPositionById(Long id) {
         return entityManager.find(VesselPosition.class, id);
+
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public List<VesselPosition> getVesselPositionByDate(Date fromDate, Date toDate) {
+        //SELECT * FROM ancor.vessel_position WHERE position_received_timestamp BETWEEN '2017-04-16' AND '2017-04-20'
+        // + INTERVAL 1 DAY ORDER BY position_received_timestamp;
+        //INTERVAL is not supported in JPQL
+        String query = "SELECT vsslpstn FROM VesselPosition vsslpstn WHERE vsslpstn.positionReceivedTimestamp " +
+                "BETWEEN :fromDate AND :toDate ORDER BY vsslpstn.positionReceivedTimestamp";
+
+        return (List<VesselPosition>) entityManager.createQuery(query)
+                .setParameter("fromDate", fromDate, TemporalType.DATE)
+                .setParameter("toDate", toDate, TemporalType.DATE)
+                .getResultList();
+
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public List<VesselPosition> getVesselPositionByDate(Date fromDate) {
+        String query = "SELECT vsslpstn FROM VesselPosition vsslpstn " +
+                "WHERE vsslpstn.positionReceivedTimestamp >= :fromDate ORDER BY vsslpstn.positionReceivedTimestamp";
+
+        return (List<VesselPosition>) entityManager.createQuery(query)
+                .setParameter("fromDate", fromDate, TemporalType.DATE)
+                .getResultList();
 
     }
 

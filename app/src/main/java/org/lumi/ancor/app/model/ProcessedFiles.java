@@ -79,7 +79,7 @@ public class ProcessedFiles {
      * Default constructor
      */
     public ProcessedFiles() {
-        recordNumProcessed = 1;
+        recordNumProcessed = 0;
         processedFiles = new ArrayList<>();
 
     }

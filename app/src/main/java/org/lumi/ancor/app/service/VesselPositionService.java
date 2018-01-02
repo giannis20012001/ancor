@@ -5,6 +5,7 @@ import org.lumi.ancor.app.model.VesselPosition;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -26,6 +27,18 @@ public class VesselPositionService implements IVesselPositionService {
         VesselPosition obj = vesselPositionDAO.getVesselPositionById(id);
 
         return obj;
+
+    }
+
+    @Override
+    public List<VesselPosition> getVesselPositionByDate(Date fromDate, Date toDate) {
+        return vesselPositionDAO.getVesselPositionByDate(fromDate, toDate);
+
+    }
+
+    @Override
+    public List<VesselPosition> getVesselPositionByDate(Date fromDate) {
+        return vesselPositionDAO.getVesselPositionByDate(fromDate);
 
     }
 

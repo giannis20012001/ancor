@@ -43,6 +43,12 @@
             <artifactId>spring-boot-starter-actuator</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+
         <!-- 3rd party dependencies -->
         <!-- https://mvnrepository.com/artifact/mysql/mysql-connector-java -->
         <dependency>

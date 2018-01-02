@@ -6,6 +6,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
 
@@ -25,6 +26,8 @@ public class VesselPositionBadRows implements Serializable {
                 ", wind=" + wind +
                 ", temperature=" + temperature +
                 ", windDirection='" + windDirection + '\'' +
+                ", fileNameOrigination='" + fileNameOrigination + '\'' +
+                ", recordNumInFile=" + recordNumInFile +
                 '}';
 
     }
@@ -82,6 +85,26 @@ public class VesselPositionBadRows implements Serializable {
 
     }
 
+    public String getFileNameOrigination() {
+        return fileNameOrigination;
+
+    }
+
+    public void setFileNameOrigination(String fileNameOrigination) {
+        this.fileNameOrigination = fileNameOrigination;
+
+    }
+
+    public Integer getRecordNumInFile() {
+        return recordNumInFile;
+
+    }
+
+    public void setRecordNumInFile(Integer recordNumInFile) {
+        this.recordNumInFile = recordNumInFile;
+
+    }
+
     //=================================================================================================================
     //Constructors
     //=================================================================================================================
@@ -96,11 +119,14 @@ public class VesselPositionBadRows implements Serializable {
     /**
      * Parameterized constructor
      */
-    public VesselPositionBadRows(Integer course, Integer wind, Integer temperature, String windDirection) {
+    public VesselPositionBadRows(Integer course, Integer wind, Integer temperature, String windDirection,
+                                 String fileNameOrigination, Integer recordNumInFile) {
         this.course = course;
         this.wind = wind;
         this.temperature = temperature;
         this.windDirection = windDirection;
+        this.fileNameOrigination = fileNameOrigination;
+        this.recordNumInFile = recordNumInFile;
 
     }
 
@@ -121,6 +147,13 @@ public class VesselPositionBadRows implements Serializable {
     @Size(max = 200)
     @Column(name="wind_direction")
     private String windDirection;
+    @NotNull
+    @Size(max = 200)
+    @Column(name="file_mame_origination")
+    private String fileNameOrigination;
+    @NotNull
+    @Column(name="record_num_in_file")
+    private Integer recordNumInFile;
     //=================================
     //serialization related var
     private static final long serialVersionUID = 1L;
