@@ -281,8 +281,6 @@ public class CsvFileReader {
 
         }
 
-        String[] yolo = new java.io.File(aDirectory).list(new PatternFilter());
-
         return new java.io.File(aDirectory).list(new PatternFilter());
 
     }
