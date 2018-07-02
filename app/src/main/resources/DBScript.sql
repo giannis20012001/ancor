@@ -56,7 +56,7 @@ CREATE TABLE IF NOT EXISTS `vessel_position` (
     ON UPDATE CASCADE ON DELETE RESTRICT
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-#Structure for table ancor.vessel_position
+#Structure for table ancor.vessel_position_bad_rows
 CREATE TABLE IF NOT EXISTS `vessel_position_bad_rows` (
   `id` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
   `course` INTEGER NULL,
