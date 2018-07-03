@@ -11,6 +11,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -38,9 +39,9 @@ public class Port implements Serializable {
 
     }
 
-    //=================================================================================================================
+    //==================================================================================================================
     //Setters & Getters
-    //=================================================================================================================
+    //==================================================================================================================
     public Long getId() {
         return id;
 
@@ -81,9 +82,9 @@ public class Port implements Serializable {
 
     }
 
-    //=================================================================================================================
+    //==================================================================================================================
     //Constructors
-    //=================================================================================================================
+    //==================================================================================================================
     /**
      * Default constructor
      */
@@ -102,9 +103,9 @@ public class Port implements Serializable {
 
     }
 
-    //=================================================================================================================
+    //==================================================================================================================
     //Entity variables
-    //=================================================================================================================
+    //==================================================================================================================
     @Id
     @GeneratedValue(strategy= GenerationType.AUTO)
     @Column(name="id")
@@ -119,8 +120,9 @@ public class Port implements Serializable {
     @Column(name="from_country", unique = true)
     private String fromCountry;
     //@JsonBackReference
-    @OneToMany(mappedBy="port", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    private Set<VesselPosition> vesselPositions = new HashSet<>();
+    @OneToMany(mappedBy="port", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private Set<VesselPosition> vesselPositions = new HashSet<>(); //OPTIONAL: "@OrderBy("id")
+    //=================================
     //serialization related var
     private static final long serialVersionUID = 1L;
 

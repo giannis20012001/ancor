@@ -21,6 +21,7 @@ public class VesselDAO implements IVesselDAO {
     @SuppressWarnings("unchecked")
     public List<Vessel> getAllVessels() {
         String query = "FROM Vessel as vssl ORDER BY vssl.id";
+
         return (List<Vessel>) entityManager.createQuery(query).getResultList();
 
     }

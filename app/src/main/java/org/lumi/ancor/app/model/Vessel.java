@@ -11,6 +11,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -133,8 +134,8 @@ public class Vessel implements Serializable {
     @NotNull
     @Column(name="gross_tonnage")
     private int grossTonnage;
-    @OneToMany( mappedBy="vessel", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    private Set<VesselPosition> vesselPositions = new HashSet<>();
+    @OneToMany(mappedBy="vessel", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private Set<VesselPosition> vesselPositions = new HashSet<>(); //OPTIONAL: "@OrderBy("id")
     //=================================
     //serialization related var
     private static final long serialVersionUID = 1L;

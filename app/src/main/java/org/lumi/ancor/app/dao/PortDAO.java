@@ -21,6 +21,7 @@ public class PortDAO implements IPortDAO {
     @SuppressWarnings("unchecked")
     public List<Port> getAllPorts() {
         String query = "FROM Port as prt ORDER BY prt.id";
+
         return (List<Port>) entityManager.createQuery(query).getResultList();
 
     }

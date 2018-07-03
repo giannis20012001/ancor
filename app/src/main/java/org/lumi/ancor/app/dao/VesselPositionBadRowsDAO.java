@@ -21,6 +21,7 @@ public class VesselPositionBadRowsDAO implements IVesselPositionBadRowsDAO {
     @SuppressWarnings("unchecked")
     public List<VesselPositionBadRows> getAllVesselPositionBadRows() {
         String query = "FROM VesselPositionBadRows as vsslpstnbdrws ORDER BY vsslpstnbdrws.id";
+
         return (List<VesselPositionBadRows>) entityManager.createQuery(query).getResultList();
 
     }
